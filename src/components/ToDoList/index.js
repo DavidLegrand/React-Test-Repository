@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import Title from '../Title'
 import Task from './Task'
 import NewTaskForm from './NewTaskForm'
+import Select from './Select'
+
 
 function ToDoList() {
   const [toDoList, setToDoList] = useState([
@@ -10,6 +12,11 @@ function ToDoList() {
     { id: 3, title: "Sortir les poubelles", completed: true },
     { id: 4, title: "Dormir", completed: false },
   ])
+
+  const [filter, setFilter] = useState("all")
+  const handleFilter = (selection) => {
+    setFilter(selection)
+  }
 
   const handleCompleted = (task) => {
     const newList = toDoList.map(t => {
@@ -26,8 +33,12 @@ function ToDoList() {
   }
 
   const handleNewTask = (title) => {
-    const newTask = { id: 0, title, completed: false }
+    const newTask = { id: getMaxId() + 1, title, completed: false }
     setToDoList([...toDoList, newTask])
+  }
+
+  const getMaxId = () => {
+    return toDoList.reduce((max, elt) => elt.id > max.id ? elt : max).id
   }
 
   return (
@@ -35,9 +46,14 @@ function ToDoList() {
       <Title>To Do List</Title>
       <ul>
         <li className="task bold"><div>Terminée</div><div>Tâche</div><div>Supprimer</div></li>
-        {toDoList.map((task) =>
-          <Task key={task.id} task={task} remove={handleRemove} completed={handleCompleted} />
-        )}</ul>
+        {toDoList
+          .filter(task => filter === "all" ? true : task.completed === (filter === "true"))
+          .map(task =>
+            <Task key={task.id} task={task} remove={handleRemove} completed={handleCompleted} />
+          )
+        }
+      </ul>
+      <Select handleFilter={handleFilter} />
       <NewTaskForm newTask={handleNewTask} />
     </>);
 }

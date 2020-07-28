@@ -3,9 +3,10 @@ import React, { useState } from 'react'
 const NewTaskForm = ({ newTask }) => {
   const [taskName, setTaskName] = useState('')
 
-  const handleSubmit = (e)=>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    newTask(taskName);
+    if (taskName !== "")
+      newTask(taskName);
     setTaskName("");
   }
 
@@ -17,7 +18,7 @@ const NewTaskForm = ({ newTask }) => {
           value={taskName}
           onChange={(e) => { setTaskName(e.target.value) }}
         /></div>
-        <div><button type="submit">+</button></div>
+        <div><button type="submit" className="add">+</button></div>
       </form>
     </div>
   )
