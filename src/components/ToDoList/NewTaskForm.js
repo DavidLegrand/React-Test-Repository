@@ -1,13 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
+import ToDo from '../../context/ToDo'
 
-const NewTaskForm = ({ newTask }) => {
+const NewTaskForm = () => {
   const [taskName, setTaskName] = useState('')
+  const { toDoList, setToDoList } = useContext(ToDo)
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (taskName !== "")
-      newTask(taskName);
+    if (taskName !== "") {
+      const newTask = { id: getMaxId() + 1, title: taskName, completed: false }
+      setToDoList([...toDoList, newTask])
+    }
     setTaskName("");
+  }
+
+  const getMaxId = () => {
+    return toDoList.reduce((max, elt) => elt.id > max.id ? elt : max).id
   }
 
   return (

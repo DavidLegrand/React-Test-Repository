@@ -1,60 +1,36 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Title from '../Title'
-import Task from './Task'
 import NewTaskForm from './NewTaskForm'
 import Select from './Select'
+import List from './List'
+import ToDo from '../../context/ToDo'
 
 
 function ToDoList() {
-  const [toDoList, setToDoList] = useState([
-    { id: 1, title: "Faire les courses", completed: false },
-    { id: 2, title: "Faire la vaisselle", completed: true },
-    { id: 3, title: "Sortir les poubelles", completed: true },
-    { id: 4, title: "Dormir", completed: false },
-  ])
+  const [toDoList, setToDoList] = useState([])
+  const endpoint = "https://jsonplaceholder.typicode.com/todos?userId=1"
+
+  // Montage
+  useEffect(() => {
+    fetch(endpoint)
+      .then(res => res.json())
+      .then(res => setToDoList(res))
+      .catch(err => console.error(err))
+  }, [endpoint])
 
   const [filter, setFilter] = useState("all")
   const handleFilter = (selection) => {
     setFilter(selection)
   }
 
-  const handleCompleted = (task) => {
-    const newList = toDoList.map(t => {
-      if (t.id === task.id) {
-        t.completed = !t.completed
-      }
-      return t
-    })
-    setToDoList(newList)
-  }
-
-  const handleRemove = (task) => {
-    setToDoList(toDoList.filter(t => t !== task))
-  }
-
-  const handleNewTask = (title) => {
-    const newTask = { id: getMaxId() + 1, title, completed: false }
-    setToDoList([...toDoList, newTask])
-  }
-
-  const getMaxId = () => {
-    return toDoList.reduce((max, elt) => elt.id > max.id ? elt : max).id
-  }
-
   return (
     <>
-      <Title>To Do List</Title>
-      <ul>
-        <li className="task bold"><div>Terminée</div><div>Tâche</div><div>Supprimer</div></li>
-        {toDoList
-          .filter(task => filter === "all" ? true : task.completed === (filter === "true"))
-          .map(task =>
-            <Task key={task.id} task={task} remove={handleRemove} completed={handleCompleted} />
-          )
-        }
-      </ul>
-      <Select handleFilter={handleFilter} />
-      <NewTaskForm newTask={handleNewTask} />
+      <ToDo.Provider value={{ toDoList, setToDoList, filter }}>
+        <Title>To Do List</Title>
+        <List />
+        <Select handleFilter={handleFilter} />
+        <NewTaskForm />
+      </ToDo.Provider>
     </>);
 }
 

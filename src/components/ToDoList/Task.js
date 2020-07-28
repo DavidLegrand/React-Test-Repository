@@ -6,6 +6,7 @@ const Task = ({ task, remove, completed }) => {
   const toggleConfirm = () => {
     setConfirm(!confirm);
   }
+
   return (
     <li className="task">
       <div><input type="checkbox" checked={task.completed} onChange={() => { completed(task) }} /></div>
