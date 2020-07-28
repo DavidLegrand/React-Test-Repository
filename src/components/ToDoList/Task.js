@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import Confirm from './Confirm'
 
 const Task = ({ task, remove, completed }) => {
+  console.log("task rendered : ", task.id)
   const [confirm, setConfirm] = useState(false)
-  const toggleConfirm = () => {
+  const toggleConfirm = useCallback(() => {
     setConfirm(!confirm);
-  }
-
+  }, [confirm, setConfirm])
+  
   return (
     <li className="task">
       <div><input type="checkbox" checked={task.completed} onChange={() => { completed(task) }} /></div>
@@ -18,4 +19,10 @@ const Task = ({ task, remove, completed }) => {
   )
 }
 
-export default Task
+const areEqual = (prevProps, nextProps) => {
+  if (prevProps.task === nextProps.task)
+    return true
+  else return false
+}
+
+export default React.memo(Task, areEqual)

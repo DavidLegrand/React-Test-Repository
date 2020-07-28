@@ -1,9 +1,10 @@
 import React from 'react'
 
 const Title = (props) => {
+  const rand = Math.random()
   return (
-    <h1>{props.children}</h1>
+    <h1>{props.children} - {rand}</h1>
   )
 }
 
-export default Title
+export default React.memo(Title)

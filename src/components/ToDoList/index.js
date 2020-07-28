@@ -1,37 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import useFetch from '../../hooks'
 import Title from '../Title'
 import NewTaskForm from './NewTaskForm'
-import Select from './Select'
+import SelectFilter from './SelectFilter'
 import List from './List'
 import ToDo from '../../context/ToDo'
+import Filter from '../../context/Filter'
 
 
 function ToDoList() {
   const [toDoList, setToDoList] = useState([])
-  const endpoint = "https://jsonplaceholder.typicode.com/todos?userId=1"
-
-  // Montage
-  useEffect(() => {
-    fetch(endpoint)
-      .then(res => res.json())
-      .then(res => setToDoList(res))
-      .catch(err => console.error(err))
-  }, [endpoint])
-
   const [filter, setFilter] = useState("all")
-  const handleFilter = (selection) => {
-    setFilter(selection)
-  }
+
+  const endpoint = "https://jsonplaceholder.typicode.com/todos?userId=1"
+  useFetch(endpoint, setToDoList);
+
 
   return (
     <>
-      <ToDo.Provider value={{ toDoList, setToDoList, filter }}>
-        <Title>To Do List</Title>
-        <List />
-        <Select handleFilter={handleFilter} />
+      <Title>To Do List</Title>
+      <ToDo.Provider value={{ toDoList, setToDoList }}>
+        <Filter.Provider value={{ filter, setFilter }}>
+          <List />
+          <SelectFilter />
+        </Filter.Provider>
         <NewTaskForm />
       </ToDo.Provider>
     </>);
 }
 
-export default ToDoList
+export default React.memo(ToDoList)
