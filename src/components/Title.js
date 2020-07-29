@@ -3,7 +3,7 @@ import React from 'react'
 const Title = (props) => {
   const rand = Math.random()
   return (
-    <h1>{props.children} - {rand}</h1>
+    <h1>{props.children}</h1>
   )
 }
 
